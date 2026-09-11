@@ -8,6 +8,7 @@ UIの存在を一切知らない。
     完了通知: {"type": "done",     "result": str}
     エラー通知: {"type": "error",  "message": str}
 """
+
 from __future__ import annotations
 
 import queue
@@ -53,8 +54,7 @@ class DataProcessor:
 
             # 全ステップ完了後に完了通知を送信
             result = (
-                f"変換完了: '{input_file}' → '{output_dir}' "
-                f"(パラメータ: {param!r})"
+                f"変換完了: '{input_file}' → '{output_dir}' (パラメータ: {param!r})"
             )
             result_queue.put({"type": "done", "result": result})
 

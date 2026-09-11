@@ -3,6 +3,7 @@
 設定値の読み込み・検証・保存を担う。
 テーマ変更は即時反映のため customtkinter の API を直接呼ぶ。
 """
+
 from __future__ import annotations
 
 import customtkinter as ctk

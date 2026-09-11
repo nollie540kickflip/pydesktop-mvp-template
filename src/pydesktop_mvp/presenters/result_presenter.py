@@ -3,6 +3,7 @@
 MainPresenter からのコールバックで結果を受け取り、
 ResultView に表示を委譲する。
 """
+
 from __future__ import annotations
 
 from pydesktop_mvp.views.result_view import ResultView

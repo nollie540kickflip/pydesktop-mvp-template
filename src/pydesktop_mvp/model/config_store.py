@@ -3,6 +3,7 @@
 UIの存在を一切知らない。
 設定値はデータクラスで表現し、JSONファイルで読み書きする。
 """
+
 from __future__ import annotations
 
 import json
@@ -17,8 +18,8 @@ class AppConfig:
     新しい設定項目を追加する場合は、ここにフィールドを追加するだけでよい。
     """
 
-    theme: str = "system"           # "light" | "dark" | "system"
-    processing_steps: int = 10      # ダミー処理のステップ数 (1〜)
+    theme: str = "system"  # "light" | "dark" | "system"
+    processing_steps: int = 10  # ダミー処理のステップ数 (1〜)
 
 
 class ConfigStore:

@@ -4,9 +4,10 @@
 Presenterが呼ぶ Setter で初期値を設定し、
 ユーザーが「保存」を押したら Presenter に委譲する。
 """
+
 from __future__ import annotations
 
-from typing import Callable
+from collections.abc import Callable
 
 import customtkinter as ctk
 
@@ -27,9 +28,9 @@ class SettingsView(ctk.CTkFrame):
         PAD_Y = 12
 
         # タイトル
-        ctk.CTkLabel(
-            self, text="設定", font=ctk.CTkFont(size=18, weight="bold")
-        ).grid(row=0, column=0, columnspan=2, padx=20, pady=(20, 16), sticky="w")
+        ctk.CTkLabel(self, text="設定", font=ctk.CTkFont(size=18, weight="bold")).grid(
+            row=0, column=0, columnspan=2, padx=20, pady=(20, 16), sticky="w"
+        )
 
         # ── テーマ ────────────────────────────────────────────────
         ctk.CTkLabel(self, text="テーマ:").grid(

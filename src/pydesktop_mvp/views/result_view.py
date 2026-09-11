@@ -4,6 +4,7 @@
 Presenter から add_result() / clear_results() を呼ばれるだけで、
 自身では何も判断しない。
 """
+
 from __future__ import annotations
 
 import customtkinter as ctk
@@ -31,9 +32,7 @@ class ResultView(ctk.CTkFrame):
 
         # スクロール可能な結果リスト
         self._scroll_frame = ctk.CTkScrollableFrame(self)
-        self._scroll_frame.grid(
-            row=1, column=0, padx=20, pady=(0, 20), sticky="nsew"
-        )
+        self._scroll_frame.grid(row=1, column=0, padx=20, pady=(0, 20), sticky="nsew")
         self._scroll_frame.grid_columnconfigure(0, weight=1)
 
     # ------------------------------------------------------------------

@@ -21,10 +21,12 @@
     │   └─ on_result_added   = result_presenter.add_result (結果通知)
     └─ app_window.mainloop()
 """
+
 from __future__ import annotations
 
-import customtkinter as ctk
 from pathlib import Path
+
+import customtkinter as ctk
 
 from pydesktop_mvp.model.config_store import ConfigStore
 from pydesktop_mvp.model.processor import DataProcessor
@@ -54,14 +56,14 @@ def main() -> None:
     app_window = AppWindow()
 
     # 各画面フレームは AppWindow のコンテンツエリアを親として生成する
-    main_view     = MainView(master=app_window.content)
+    main_view = MainView(master=app_window.content)
     settings_view = SettingsView(master=app_window.content)
-    result_view   = ResultView(master=app_window.content)
+    result_view = ResultView(master=app_window.content)
 
     # 画面を AppWindow に登録し、初期画面を表示
-    app_window.register_frame("main",     main_view)
+    app_window.register_frame("main", main_view)
     app_window.register_frame("settings", settings_view)
-    app_window.register_frame("result",   result_view)
+    app_window.register_frame("result", result_view)
     app_window.show_screen("main")
 
     # ── Presenter の生成（依存関係の注入） ────────────────────────

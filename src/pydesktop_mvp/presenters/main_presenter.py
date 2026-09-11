@@ -5,12 +5,13 @@
 - 処理完了後に on_result_added コールバックで ResultPresenter に通知し、
   navigate コールバックで結果画面に自動遷移する。
 """
+
 from __future__ import annotations
 
 import queue
 import threading
+from collections.abc import Callable
 from tkinter import filedialog
-from typing import Callable
 
 from pydesktop_mvp.model.config_store import ConfigStore
 from pydesktop_mvp.model.processor import DataProcessor

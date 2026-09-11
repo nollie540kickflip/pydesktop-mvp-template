@@ -4,9 +4,10 @@ CustomTkinterによるUI構築のみを担う。
 自己判断を持たず、ユーザー操作はすべて Presenter に委譲する。
 元の view.py を CTkFrame として移植したもの。
 """
+
 from __future__ import annotations
 
-from typing import Callable
+from collections.abc import Callable
 
 import customtkinter as ctk
 

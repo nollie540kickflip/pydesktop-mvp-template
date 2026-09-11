@@ -5,15 +5,16 @@ show_screen() で表示を切り替える。
 サイドバーボタンによる画面切り替えはUI上の操作なので、
 Presenterを介さずここで完結させる。
 """
+
 from __future__ import annotations
 
 import customtkinter as ctk
 
 # サイドバーに表示するナビゲーション項目 (screen_name, label_text)
 _NAV_ITEMS: list[tuple[str, str]] = [
-    ("main",     "🏠  メイン"),
+    ("main", "🏠  メイン"),
     ("settings", "⚙️  設定"),
-    ("result",   "📋  結果一覧"),
+    ("result", "📋  結果一覧"),
 ]
 
 
