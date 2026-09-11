@@ -1,25 +1,27 @@
-"""Model層: ビジネスロジックのみを担う.
+"""データ変換を担うModel.
 
 UIの存在を一切知らない。
 処理の進捗と結果は queue.Queue を通じてのみ外部に通知する。
+
+キューに送信するメッセージのフォーマット:
+    進捗通知: {"type": "progress", "value": float}  # 0.0 〜 1.0
+    完了通知: {"type": "done",     "result": str}
+    エラー通知: {"type": "error",  "message": str}
 """
 from __future__ import annotations
 
 import queue
 import time
 
+from .config_store import AppConfig
+
 
 class DataProcessor:
-    """データ変換を担うModelクラス.
+    """データ変換処理のModelクラス.
 
     UIの存在を一切知らず、純粋なビジネスロジックのみを記述する。
     処理は別スレッドで実行されることを前提とし、
     進捗と結果を result_queue に put することで Presenter に通知する。
-
-    キューに送信するメッセージのフォーマット:
-        進捗通知: {"type": "progress", "value": float}  # 0.0 〜 1.0
-        完了通知: {"type": "done",     "result": str}
-        エラー通知: {"type": "error",  "message": str}
     """
 
     def run(
@@ -27,6 +29,7 @@ class DataProcessor:
         input_file: str,
         output_dir: str,
         param: str,
+        config: AppConfig,
         result_queue: queue.Queue,
     ) -> None:
         """ダミーのデータ変換処理（別スレッドで実行される）.
@@ -35,9 +38,10 @@ class DataProcessor:
             input_file: 入力ファイルのパス
             output_dir: 出力先ディレクトリのパス
             param: 変換パラメータ
+            config: アプリ設定（processing_steps でステップ数を制御）
             result_queue: 進捗と結果を通知するキュー
         """
-        total_steps = 10
+        total_steps = config.processing_steps
 
         try:
             for step in range(1, total_steps + 1):
