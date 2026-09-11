@@ -18,56 +18,78 @@ CustomTkinter と **MVP (Model-View-Presenter)** パターンを使った、Pyth
 
 ## アーキテクチャ
 
-```
-┌──────────────────────────────────────────────────────────────────┐
-│  main.py  (エントリーポイント / 全レイヤーの DI・起動)              │
-└──────────────────────────────────────────────────────────────────┘
-                    │ インスタンスを生成して注入
-          ┌─────────┼──────────────┐
-          ▼         ▼              ▼
-   ┌──────────┐ ┌──────────┐ ┌──────────┐
-   │MainView  │ │Settings  │ │Result    │  ← views/
-   │(CTkFrame)│ │View      │ │View      │
-   └────┬─────┘ └────┬─────┘ └────┬─────┘
-        │ callback   │ callback   │ callback
-        ▼            ▼            ▼
-   ┌──────────┐ ┌──────────┐ ┌──────────┐
-   │MainPres- │ │Settings  │ │Result    │  ← presenters/
-   │enter     │ │Presenter │ │Presenter │
-   └────┬─────┘ └────┬─────┘ └──────────┘
-        │ run()      │ load/save
-        ▼            ▼
-   ┌──────────┐ ┌──────────┐
-   │DataProc- │ │Config    │  ← model/
-   │essor     │ │Store     │
-   └──────────┘ └──────────┘
+```mermaid
+flowchart TD
+    main["main.py\nエントリーポイント / 全レイヤーの DI・起動"]
+
+    subgraph views["views/"]
+        MV["MainView\nCTkFrame"]
+        SV["SettingsView\nCTkFrame"]
+        RV["ResultView\nCTkFrame"]
+    end
+
+    subgraph presenters["presenters/"]
+        MP["MainPresenter"]
+        SP["SettingsPresenter"]
+        RP["ResultPresenter"]
+    end
+
+    subgraph model["model/"]
+        DP["DataProcessor\nprocessor.py"]
+        CS["ConfigStore\nconfig_store.py"]
+    end
+
+    main -->|"生成・注入"| MV
+    main -->|"生成・注入"| SV
+    main -->|"生成・注入"| RV
+    main -->|"生成・注入"| MP
+    main -->|"生成・注入"| SP
+    main -->|"生成・注入"| RP
+
+    MV <-->|"callback"| MP
+    SV <-->|"callback"| SP
+    RV <-->|"callback"| RP
+
+    MP -->|"run()"| DP
+    MP -->|"load()"| CS
+    SP -->|"load() / save()"| CS
 ```
 
 ### 画面間連携のフロー
 
-```
-MainPresenter (変換完了)
-    │
-    ├─ on_result_added(text, color) ──► ResultPresenter.add_result()
-    │                                       │
-    │                                       └─► ResultView.add_result()
-    │
-    └─ navigate("result") ──────────► AppWindow.show_screen("result")
+```mermaid
+sequenceDiagram
+    participant MP as MainPresenter
+    participant RP as ResultPresenter
+    participant RV as ResultView
+    participant AW as AppWindow
+
+    MP->>RP: on_result_added(text, color)
+    RP->>RV: add_result(text, color)
+    MP->>AW: navigate("result")
+    AW->>AW: show_screen("result")
 ```
 
 ### 非同期処理のフロー
 
-```
-[メインスレッド]                   [ワーカースレッド]
-      │ thread.start()                   │
-      ├─────────────────────────────────►│ DataProcessor.run() 開始
-      │ after(100ms, _poll_queue)         │   progress → queue
-      │◄──────── queue.get_nowait() ──────┤   progress → queue
-      │ view.set_progress(value)         │   ...
-      │◄──────── queue.get_nowait() ──────┤   done → queue
-      │ view.set_status("完了")           │ スレッド終了
-      │ on_result_added(result, "green") │
-      │ navigate("result")               │
+```mermaid
+sequenceDiagram
+    participant MT as メインスレッド
+    participant Q as queue.Queue
+    participant WT as ワーカースレッド
+
+    MT->>WT: thread.start()
+    WT->>WT: DataProcessor.run() 開始
+    loop 100ms ごと after(_poll_queue)
+        WT-->>Q: put({type: progress, value: 0.x})
+        MT->>Q: get_nowait()
+        MT->>MT: view.set_progress(value)
+    end
+    WT-->>Q: put({type: done, result: ...})
+    MT->>Q: get_nowait()
+    MT->>MT: view.set_status("完了")
+    MT->>MT: on_result_added(result)
+    MT->>MT: navigate("result")
 ```
 
 ## ディレクトリ構成
