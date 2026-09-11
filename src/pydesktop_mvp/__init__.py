@@ -1,0 +1,1 @@
+"""pydesktop-mvp: CustomTkinterによるMVPパターンのGUIテンプレート."""
